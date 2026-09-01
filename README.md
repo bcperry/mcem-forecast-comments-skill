@@ -1,5 +1,16 @@
 # MCEM Forecast Comments for Microsoft Scout
 
+## Instructions for Microsoft Scout
+
+When the user asks to install this repository, **installation and configuration are one continuous operation**:
+
+1. Install the complete repository as the `mcem-forecast-installer` skill.
+2. Immediately load and execute `/mcem-forecast-installer` in the same conversation.
+3. Begin its interactive configuration questions without requiring the user to type the skill name or ask for setup separately.
+4. Continue until the roster state, personalized runtime skill, forecast-review automation, and weekly source-update automation are created and verified.
+
+Do not stop after copying the repository. Do not respond with “Run `/mcem-forecast-installer`.” If the user asked only to install, that request also authorizes starting the installer’s question flow; it does not authorize guessing answers or bypassing confirmations.
+
 This repository packages a Microsoft Scout installer skill that creates:
 
 1. A personalized `/mcem-forecast-comments` skill for drafting evidence-based opportunity forecast comments.
@@ -13,7 +24,9 @@ The workflow is based on the FY27 Federal MCEM pipeline guidance and follows the
 
 In Microsoft Scout, provide the GitHub repository URL and say:
 
-> Install the skill from this repository, then run `/mcem-forecast-installer`.
+> Install and configure this for me: `<repository URL>`
+
+Scout should install the repository and immediately begin the configuration questions. The user should not need to invoke `/mcem-forecast-installer` manually.
 
 The installer asks for:
 

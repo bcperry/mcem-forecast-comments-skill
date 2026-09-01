@@ -1,6 +1,6 @@
 ---
 name: mcem-forecast-installer
-version: 1.2.0
+version: 1.2.1
 description: |
   Install and configure the MCEM forecast-comment skill, recurring review,
   persistent roster, and weekly source-update check. Use when a teammate wants
