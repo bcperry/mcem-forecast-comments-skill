@@ -54,6 +54,9 @@ The installer is self-contained. If Scout copies the full repository, it uses th
 - Supports listing, adding, pausing, closing, and reactivating roster entries, plus approving or rejecting inferred candidates.
 - Separates verified facts from unknowns.
 - Applies conservative MCEM commitment and pipeline-hygiene standards.
+- Identifies milestones that satisfy every requirement for CSU ownership transition.
+- Produces a standardized, paste-ready CSU handoff block only when all required evidence is present.
+- Reports precise CSU-readiness gaps instead of filling missing fields or overstating commitment.
 - Identifies stale comments, missing evidence, risks, blockers, owners, and due dates.
 - Never invents customer commitment, timing, value, budget, resources, or technical feasibility.
 

@@ -1,6 +1,6 @@
 ---
 name: mcem-forecast-installer
-version: 1.2.1
+version: 1.3.0
 description: |
   Install and configure the MCEM forecast-comment skill, recurring review,
   persistent roster, and weekly source-update check. Use when a teammate wants
@@ -198,7 +198,7 @@ On reinstall, merge approved starter entries by stable ID or normalized name; pr
    - `{{RUBRIC_TEXT}}`
 5. Use this runtime description verbatim for both creation and updates:
 
-   `Manage a persistent opportunity roster and draft evidence-based FY27 MCEM forecast comments from authorized Microsoft 365 evidence; no MSX writes.`
+   `Manage a persistent opportunity roster, draft evidence-based FY27 MCEM forecast comments, and identify milestones ready for CSU ownership transition; no MSX writes.`
 
 6. If `mcem-forecast-comments` is absent, create it with `m_create_skill`.
 7. If it exists, pass the exact entry's `id` from `m_list_skills` to `m_update_skill`; do not create a numbered duplicate.
@@ -212,11 +212,11 @@ Use this exact name:
 
 Use this description:
 
-`Reviews the active opportunity roster, drafts evidence-based MCEM forecast comments, logs review metadata, and suggests newly inferred opportunities.`
+`Reviews the active opportunity roster, drafts evidence-based MCEM forecast comments, identifies CSU-ready milestones, logs review metadata, and suggests newly inferred opportunities.`
 
 Use one step with this thin prompt:
 
-`Invoke and execute the /mcem-forecast-comments skill for the current review window. Follow its full evidence, privacy, and output rules. Produce draft comments only; do not write to MSX or send content externally.`
+`Invoke and execute the /mcem-forecast-comments skill for the current review window. Follow its full evidence, CSU-readiness, privacy, and output rules. Produce draft comments and CSU handoff blocks only; do not write to MSX or send content externally.`
 
 Configuration:
 
@@ -346,13 +346,34 @@ Only describe a milestone as Committed when evidence supports all applicable com
 
 Never fabricate or silently fill gaps. Use `TBD` only when a required fact is unknown, and identify the evidence or confirmation needed. Stay within the configured maximum length and prioritize forecast-changing facts, commitment evidence, risks, and next steps.
 
+CSU ownership-transition readiness is a separate strict gate. Mark a milestone `Ready for CSU` only when current evidence supports every field below: named customer sponsor and specific agreed outcome; named customer lead; workload, SKU/capacity, region, and quantity/cores; customer-confirmed date and monthly value; delivery owner/provider with delivery capacity and required funding confirmed; customer and Microsoft/partner resources; risks/blockers or an evidence-based statement that none are identified; commitment criteria and execution context reviewed with a named CSA/CSAM; named next-action owner and due date; scheduled customer kickoff date; and Committed status supported by the commitment criteria. Internal intent, a planned handoff, missing fields, or `TBD` means not ready.
+
+For each milestone that passes every gate, output this exact populated block:
+
+```text
+MM/DD/YYYY | MS
+Outcome: Customer sponsor [Sponsor Name] agreed to [specific deployment or usage outcome].
+Customer lead: [Project/Technical Lead].
+Scope: [workload, SKU/capacity type, region, quantity/cores].
+Timeline/value: Customer confirmed estimated due date of [MM/DD/YYYY] and estimated value of [$X/month].
+Delivery: [Customer / Microsoft Support / Partner / ISD]; [partner/provider] capacity and required funding are confirmed.
+Resources: Customer will provide [resources]; Microsoft/partner will provide [resources].
+Risks/blockers: [None identified / describe risk, owner, and mitigation].
+Handoff: Reviewed commitment criteria and execution context with [CSA/CSAM Name].
+Next action: [Owner] to complete [action] by [MM/DD/YYYY]; customer kickoff scheduled for [MM/DD/YYYY].
+Milestone is Committed and ready for ownership transition to CSU.
+```
+
+Use the review date in the first line and replace every bracketed field with supported facts. Do not output the final sentence, label the milestone ready, or produce a ready-looking block containing placeholders or `TBD` when any gate is missing. Instead return `Not ready for CSU` plus a concise list of the missing evidence or actions.
+
 Output:
 1. `Reviewed <count> opportunities using evidence from <start date> through <end date>.`
 2. For each opportunity: a paste-ready Draft forecast comment, short Evidence basis, Missing or stale facts, and Quality check (`Ready to paste`, `Review required`, or `Insufficient evidence`).
-3. A `Suggested new opportunities` table containing candidate, customer, confidence, evidence signals, and action required. State `None identified` when empty.
-4. End with a table containing Opportunity, Status supported?, Comment age, Key gap, and Next owner/date.
+3. A `CSU ownership-transition readiness` section. Include the exact populated block for each ready milestone and a gap list for each not-ready milestone.
+4. A `Suggested new opportunities` table containing candidate, customer, confidence, evidence signals, and action required. State `None identified` when empty.
+5. End with a table containing Opportunity, Status supported?, CSU readiness, Comment age, Key gap, and Next owner/date.
 
-After each opportunity review, update its `lastReviewedAt` and `lastEvidenceAt` in `roster.json`; update `lastCommentedAt` only when evidence shows when the MSX comment was actually updated, not merely when a draft was generated. Append one JSON object per opportunity to `review-log.jsonl` with runId, reviewedAt, opportunityId, result, evidenceStart, evidenceEnd, latestEvidenceAt, keyGap, and nextOwnerDue. Do not log the full draft or copied source content. Preserve prior log lines.
+After each opportunity review, update its `lastReviewedAt` and `lastEvidenceAt` in `roster.json`; update `lastCommentedAt` only when evidence shows when the MSX comment was actually updated, not merely when a draft was generated. Append one JSON object per opportunity to `review-log.jsonl` with runId, reviewedAt, opportunityId, result, csuReadiness, evidenceStart, evidenceEnd, latestEvidenceAt, keyGap, and nextOwnerDue. Do not log the full draft or copied source content. Preserve prior log lines.
 
 Do not send, post, email, or write comments to MSX. During scheduled runs, produce no external communications. If an opportunity has no recent evidence, still log the review and return `Insufficient evidence` with what must be confirmed rather than recycling an old comment. A repeated run over the same evidence should produce materially equivalent comments and must not duplicate an identical candidate detection.
 

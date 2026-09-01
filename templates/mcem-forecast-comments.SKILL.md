@@ -89,6 +89,42 @@ If one or more criteria are missing, keep the milestone Uncommitted or state tha
 
 For At Risk or Blocked milestones, include Status Reason, Help Needed, and Risk/Blocker Details. Do not use Blocked for a general concern that is not actively preventing progress.
 
+## CSU ownership-transition readiness
+
+Evaluate CSU readiness separately from forecast-comment quality. Mark a milestone `Ready for CSU` only when current evidence supports every requirement:
+
+- Named customer sponsor and a specific agreed deployment or usage outcome.
+- Named customer project or technical lead.
+- Workload, SKU/capacity type, region, and quantity/cores.
+- Customer-confirmed estimated due date and estimated monthly value.
+- Delivery owner/provider, confirmed delivery capacity, and required funding.
+- Customer resources and Microsoft/partner resources.
+- Risks/blockers, or an evidence-based statement that none are identified; active risks include owner and mitigation.
+- Commitment criteria and execution context reviewed with a named CSA/CSAM.
+- Named owner, next action, and due date.
+- Scheduled customer kickoff date.
+- Committed status supported by all applicable commitment criteria.
+
+Internal intent, a planned handoff, missing fields, or `TBD` means the milestone is not ready.
+
+For every milestone that passes all gates, output this exact populated format:
+
+```text
+MM/DD/YYYY | MS
+Outcome: Customer sponsor [Sponsor Name] agreed to [specific deployment or usage outcome].
+Customer lead: [Project/Technical Lead].
+Scope: [workload, SKU/capacity type, region, quantity/cores].
+Timeline/value: Customer confirmed estimated due date of [MM/DD/YYYY] and estimated value of [$X/month].
+Delivery: [Customer / Microsoft Support / Partner / ISD]; [partner/provider] capacity and required funding are confirmed.
+Resources: Customer will provide [resources]; Microsoft/partner will provide [resources].
+Risks/blockers: [None identified / describe risk, owner, and mitigation].
+Handoff: Reviewed commitment criteria and execution context with [CSA/CSAM Name].
+Next action: [Owner] to complete [action] by [MM/DD/YYYY]; customer kickoff scheduled for [MM/DD/YYYY].
+Milestone is Committed and ready for ownership transition to CSU.
+```
+
+Use the review date in the first line and replace every bracketed field with evidence-backed facts. Never output the final sentence, label the milestone ready, or produce a ready-looking block containing placeholders or `TBD` when any gate is missing. Return `Not ready for CSU` with the missing evidence/actions instead.
+
 ## Output format
 
 Lead with a summary:
@@ -109,10 +145,15 @@ Then provide one section per opportunity:
 
 **Quality check:** `<Ready to paste | Review required | Insufficient evidence>` — <one-sentence reason>
 
+**CSU ownership-transition readiness**
+
+- For a ready milestone: the exact populated CSU handoff block.
+- For a not-ready milestone: `Not ready for CSU` followed by the missing evidence or actions.
+
 End with a compact inspection table:
 
-| Opportunity | Status supported? | Comment age | Key gap | Next owner/date |
-|---|---|---:|---|---|
+| Opportunity | Status supported? | CSU readiness | Comment age | Key gap | Next owner/date |
+|---|---|---|---:|---|---|
 
 Before the inspection table, include:
 
@@ -145,6 +186,7 @@ After each opportunity review:
    - `reviewedAt`
    - `opportunityId`
    - `result`
+   - `csuReadiness`
    - `evidenceStart`
    - `evidenceEnd`
    - `latestEvidenceAt`
