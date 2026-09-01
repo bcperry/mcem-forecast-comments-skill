@@ -93,3 +93,7 @@ Primary source used for this version:
 - Scheduled output should use Scout's private automation result/Teams notification or remain in automation history.
 - The skill drafts comments only; users remain responsible for reviewing and entering them in MSX.
 - Do not commit customer data, opportunity exports, credentials, or generated comments to this repository.
+
+## License
+
+Licensed under the [MIT License](LICENSE).
